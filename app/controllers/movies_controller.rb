@@ -5,9 +5,15 @@ class MoviesController < ApplicationController
     @movie = Movie.find(id) # look up movie by unique ID
     # will render app/views/movies/show.<extension> by default
   end
+def index
+    @class = Hash.new {|hash, key| hash[key] = ""}
+    if column = params[:sortby]
+      @class[column.to_sym] = "hilite"
+      @movies = Movie.find(:all , :order => column)
+    else 
+      @movies = Movie.all
+    end
 
-  def index
-    @movies = Movie.all
   end
 
   def new
