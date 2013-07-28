@@ -29,8 +29,10 @@ class MoviesController < ApplicationController
     index_params[:sortby] = column
     index_params[:ratings] = ratings
     @rating_value = Hash.new(false)
+    session[:index_params] = index_params
 
-    if !cur_column or !cur_ratings
+
+    if !cur_ratings
       params[:sortby] = column unless column == nil
       hash_ratings = Hash.new
       ratings.each {|val| hash_ratings[val] = "1" } 
@@ -50,7 +52,6 @@ class MoviesController < ApplicationController
 
     ratings.each {|rating| @rating_value[rating] = true}
     @movies = Movie.find(:all , options)
-    session[:index_params] = index_params
   end
 
   def new
