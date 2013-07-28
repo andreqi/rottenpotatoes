@@ -28,6 +28,16 @@ class MoviesController < ApplicationController
 
     index_params[:sortby] = column
     index_params[:ratings] = ratings
+    @rating_value = Hash.new(false)
+
+    if !cur_column or !cur_ratings
+      params[:sortby] = column unless column == nil
+      hash_ratings = Hash.new
+      ratings.each {|val| hash_ratings[val] = "1" } 
+      flash.keep
+      params[:ratings] = hash_ratings
+      redirect_to movies_path(params)
+    end
 
     options = Hash.new
     if column 
@@ -38,7 +48,6 @@ class MoviesController < ApplicationController
       options[:conditions] = ["rating IN (?)", ratings]
     end
 
-    @rating_value = Hash.new(false)
     ratings.each {|rating| @rating_value[rating] = true}
     @movies = Movie.find(:all , options)
     session[:index_params] = index_params
